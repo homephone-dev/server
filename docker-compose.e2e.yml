@@ -1,0 +1,16 @@
+services:
+  sip-device:
+    build:
+      context: ./test/e2e
+      dockerfile: Dockerfile.sipp
+    depends_on:
+      - asterisk
+    entrypoint: ["sleep", "infinity"]
+
+  sip-trunk-mock:
+    build:
+      context: ./test/e2e
+      dockerfile: Dockerfile.sipp
+    depends_on:
+      - asterisk
+    entrypoint: ["sleep", "infinity"]

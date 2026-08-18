@@ -1,0 +1,21 @@
+# Env files with real secrets -- never commit these.
+.env
+.env.*
+!.env.example
+
+# Compiled binaries.
+/backend
+/migrate
+/out/
+*.exe
+*.test
+
+# Go build/test artifacts.
+*.out
+coverage.*
+
+# IDE / editor.
+.vscode/
+.idea/
+*.swp
+.DS_Store

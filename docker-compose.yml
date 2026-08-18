@@ -1,0 +1,62 @@
+services:
+  postgres:
+    build:
+      context: ./postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-homephone}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set}
+      POSTGRES_DB: ${POSTGRES_DB:-homephone}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-homephone}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    ports:
+      - "5432:5432"
+
+  migrate:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    entrypoint: ["/migrate"]
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER:-homephone}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-homephone}?sslmode=require
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  asterisk:
+    build:
+      context: ./asterisk
+    environment:
+      ARI_PASSWORD: ${ARI_PASSWORD:?ARI_PASSWORD must be set}
+    ports:
+      - "5060:5060/udp"
+      - "8088:8088"
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      API_TOKEN: ${API_TOKEN:?API_TOKEN must be set}
+      DATABASE_URL: postgres://${POSTGRES_USER:-homephone}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-homephone}?sslmode=require
+      ARI_BASE_URL: http://asterisk:8088
+      ARI_USER: homephone
+      ARI_PASSWORD: ${ARI_PASSWORD}
+      ARI_APP_NAME: homephone
+      HTTP_ADDR: :8080
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+      asterisk:
+        condition: service_started
+
+volumes:
+  postgres-data:

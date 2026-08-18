@@ -1,0 +1,15 @@
+FROM debian:bookworm-slim
+
+# SIPp (Debian package name: sip-tester) provides a scriptable, non-
+# interactive SIP UAC/UAS driven purely via XML scenario files and CLI
+# flags -- no stdin/CLI scripting needed, unlike pjsua's interactive
+# console. Both e2e SIP endpoints (device-1, trunk-mock) use this same
+# image: each plays UAC (placing a call) in some scenarios and UAS
+# (receiving a call) in others, per test/e2e/sipclient.go.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    sip-tester \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY sipp/ /sipp/
+
+WORKDIR /sipp

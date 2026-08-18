@@ -1,0 +1,17 @@
+{
+  "name": "homephone-backend",
+  "dockerComposeFile": ["../docker-compose.yml", "docker-compose.override.yml"],
+  "service": "backend",
+  "workspaceFolder": "/app",
+  "shutdownAction": "stopCompose",
+  "remoteEnv": {
+    "API_TOKEN": "${localEnv:API_TOKEN}",
+    "ARI_PASSWORD": "${localEnv:ARI_PASSWORD}"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": ["golang.go"]
+    }
+  },
+  "postCreateCommand": "go install github.com/pressly/goose/v3/cmd/goose@v3.21.1 && go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest || true"
+}
