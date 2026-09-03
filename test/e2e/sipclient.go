@@ -81,7 +81,7 @@ func (c *SIPClient) ListenAndAnswer(ctx context.Context, timeout time.Duration) 
 		"-i", "0.0.0.0", "-p", "5061",
 		"-m", "1",
 		"-timeout", fmt.Sprintf("%ds", int(timeout.Seconds())),
-		"-timeout_error", "1",
+		"-timeout_error",
 		"-nostdin",
 	}
 	out, runErr := runDockerExec(ctx, args...)
