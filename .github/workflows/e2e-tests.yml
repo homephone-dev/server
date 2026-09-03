@@ -12,6 +12,7 @@ jobs:
       API_TOKEN: ci-e2e-token
       ARI_PASSWORD: ci-e2e-ari-password
       POSTGRES_PASSWORD: ci-e2e-postgres-password
+      COMPOSE_PROJECT_NAME: homephone-dev-server
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
