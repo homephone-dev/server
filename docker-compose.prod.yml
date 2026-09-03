@@ -1,0 +1,4 @@
+services:
+  backend:
+    image: ${BACKEND_IMAGE:?BACKEND_IMAGE must be set}
+    build: null
